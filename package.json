@@ -1,7 +1,7 @@
 {
   "name": "@zhukyuri/my-q-format-date",
   "version": "1.0.1",
-  "homepage": "https://gitlab.com/queue4/my-q-format-date",
+  "homepage": "https://github.com/zhukyuri/my-q-format-date",
   "description": "my-q-format-date",
   "main": "index.js",
   "scripts": {
