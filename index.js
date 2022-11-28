@@ -21,7 +21,7 @@ class MyQFormatDate {
         return (0, moment_1.default)(this.begginingDay(date)).subtract(amount, subtract).toDate();
     };
     dateListDayOfMoth = (baseDate = this.baseDay) => {
-        const endDate = this.subtractDate(this.begginingMonth(baseDate));
+        const endDate = this.subtractDate(this.begginingDay(baseDate));
         let dateMath = (0, moment_1.default)(this.subtractDate(endDate, 'month', 1));
         this.dateArray = [];
         while (dateMath.toDate() <= endDate) {
