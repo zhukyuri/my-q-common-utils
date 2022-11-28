@@ -58,7 +58,6 @@ class MyQFormatDate {
     };
 }
 exports.MyQFormatDate = MyQFormatDate;
-const formatDate = (date) => (0, moment_1.default)(date).format('D.MM').toString();
 const createLineDateFromAggregation_Month = (endDate, data, colors = []) => {
     const C = new MyQFormatDate(endDate);
     const allDatesArray = C.dateListDayOfMoth(endDate);
@@ -66,6 +65,7 @@ const createLineDateFromAggregation_Month = (endDate, data, colors = []) => {
     const cLength = colors.length;
     const colors_ = cLength !== 0 ? colors : ['#FF0000', '#00FF00', '#0000FF'];
     let colorIndex = 0;
+    const formatDate = (date) => (0, moment_1.default)(date).format('D.MM').toString();
     const points = (data) => {
         const pointsObj = {};
         data.forEach(function (i) {
