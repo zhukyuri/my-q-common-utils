@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MyQFormatDate = void 0;
+exports.createLineDateFromAggregation_Month = exports.MyQFormatDate = void 0;
 const moment_1 = __importDefault(require("moment"));
 class MyQFormatDate {
     baseDay;
@@ -58,7 +58,37 @@ class MyQFormatDate {
     };
 }
 exports.MyQFormatDate = MyQFormatDate;
-// export const createLineDate = (toDate: Date, data: TChartLineFormat_Point, pointsY: PointsY, colors: ColorArr) => {
-//   const C = new MyQFormatDate(toDate);
-//   const pointsX = C.datesMonthFromPrevToCurrent();
-// };
+const formatDate = (date) => (0, moment_1.default)(date).format('D.MM').toString();
+const createLineDateFromAggregation_Month = (endDate, data, colors = []) => {
+    const C = new MyQFormatDate(endDate);
+    const allDatesArray = C.dateListDayOfMoth(endDate);
+    // Colors
+    const cLength = colors.length;
+    const colors_ = cLength !== 0 ? colors : ['#FF0000', '#00FF00', '#0000FF'];
+    let colorIndex = 0;
+    const points = (data) => {
+        const pointsObj = {};
+        data.forEach(function (i) {
+            pointsObj[formatDate(i.day)] = { ...i };
+        });
+        return allDatesArray.map((date) => {
+            const fd = formatDate(date);
+            return {
+                x: fd, y: !pointsObj[fd] ? 0 : pointsObj[fd].day,
+            };
+        });
+    };
+    return data.map(function (line) {
+        const color = colors_[colorIndex];
+        colorIndex++;
+        if (colorIndex > (cLength - 1))
+            colorIndex = 0;
+        return {
+            id: line.entity, color: color, data: points(line.data),
+        };
+    });
+};
+exports.createLineDateFromAggregation_Month = createLineDateFromAggregation_Month;
+// aggregateInvokeCounterMonth:
+// {entity: 'COUNTER_DAY', data: Array(4)}
+// {entity: 'ORGANIZATION', data: Array(9)}
