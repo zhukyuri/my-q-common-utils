@@ -1,6 +1,6 @@
 {
-  "name": "my-q-format-date",
-  "version": "1.0.3",
+  "name": "@zhukyuri/my-q-format-date",
+  "version": "1.0.4",
   "homepage": "https://github.com/zhukyuri/my-q-format-date",
   "description": "my-q-format-date-utils",
   "main": "index.js",
