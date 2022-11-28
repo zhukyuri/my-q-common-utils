@@ -6,9 +6,12 @@ export type TAmount = number;
 export class MyQFormatDate {
   public baseDay: Date;
   public dateArray: Date[] = [];
+  public locale: string = 'uk';
 
-  constructor(baseDate: Date = new Date()) {
+  constructor(baseDate: Date = new Date(), locale: string = 'uk') {
     this.baseDay = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate());
+    this.locale = locale;
+    moment(locale);
   }
 
   public begginingDay = (date: Date = this.baseDay): Date => {

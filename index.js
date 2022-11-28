@@ -8,8 +8,11 @@ const moment_1 = __importDefault(require("moment"));
 class MyQFormatDate {
     baseDay;
     dateArray = [];
-    constructor(baseDate = new Date()) {
+    locale = 'uk';
+    constructor(baseDate = new Date(), locale = 'uk') {
         this.baseDay = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate());
+        this.locale = locale;
+        (0, moment_1.default)(locale);
     }
     begginingDay = (date = this.baseDay) => {
         return new Date(date.getFullYear(), date.getMonth(), date.getDate());
