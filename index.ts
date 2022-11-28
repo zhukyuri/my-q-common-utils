@@ -1,33 +1,50 @@
 import moment, { Moment } from 'moment';
 
-export class MyQFormatDate {
-  public baseDay;
-  public subtract?: number;
-  public dayArrLastMonth: Date[] = [];
+export type TSubtract = 'month' | 'day' | 'year';
+export type TAmount = number;
 
-  constructor(baseDate: Date = new Date(), subtract?: number) {
+export class MyQFormatDate {
+  public baseDay: Date;
+  public dateArray: Date[] = [];
+
+  constructor(baseDate: Date = new Date()) {
     this.baseDay = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate());
-    this.subtract = subtract;
   }
 
-  public begginingDay = (date: Date = this.baseDay) => {
+  public begginingDay = (date: Date = this.baseDay): Date => {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
   };
 
-  public datesMonthFromPrevToCurrent = (toDate: Date = this.baseDay) => {
-    const dateTo_ = this.begginingDay(toDate);
-    let dateTemp: Moment;
-    if (typeof this.subtract === 'number' && this.subtract > 0) {
-      dateTemp = moment(this.begginingDay(dateTo_)).subtract(this.subtract, 'day');
-    } else {
-      dateTemp = moment(this.begginingDay(dateTo_)).subtract(1, 'month');
-    }
+  public begginingMonth = (date: Date = this.baseDay): Date => {
+    return new Date(date.getFullYear(), date.getMonth());
+  };
 
-    while (dateTemp.toDate() <= this.baseDay) {
-      this.dayArrLastMonth.push(dateTemp.toDate());
-      dateTemp = moment(this.begginingDay(toDate)).add(1, 'day');
+  public subtractDate = (date: Date, subtract: TSubtract = 'month', amount: TAmount = 1): Date => {
+    return moment(this.begginingDay(date)).subtract(amount, subtract).toDate();
+  };
+
+  public dateListDayOfMoth = (baseDate: Date = this.baseDay): Date[] => {
+    const endDate: Date = this.subtractDate(this.begginingMonth(baseDate));
+    let dateMath: Moment = moment(this.subtractDate(endDate, 'month', 1));
+    this.dateArray = [];
+
+    while (dateMath.toDate() <= endDate) {
+      this.dateArray.push(dateMath.toDate());
+      dateMath = moment(dateMath).add(1, 'day');
     }
-    return this.dayArrLastMonth;
+    return this.dateArray;
+  };
+
+  public dateListMonthOfYear = (baseDate: Date = this.baseDay): Date[] => {
+    const endDate: Date = this.subtractDate(this.begginingMonth(baseDate));
+    let dateMath: Moment = moment(this.subtractDate(endDate, 'year', 1));
+    this.dateArray = [];
+
+    while (dateMath.toDate() <= endDate) {
+      this.dateArray.push(dateMath.toDate());
+      dateMath = moment(dateMath).add(1, 'month');
+    }
+    return this.dateArray;
   };
 
   public daysOfMonth(month: number, year: number): number {
