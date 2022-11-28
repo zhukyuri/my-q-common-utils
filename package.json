@@ -1,8 +1,8 @@
 {
-  "name": "@zhukyuri/my-q-format-date",
-  "version": "1.0.4",
-  "homepage": "https://github.com/zhukyuri/my-q-format-date",
-  "description": "my-q-format-date-utils",
+  "name": "my-q-common-utils",
+  "version": "1.0.5",
+  "homepage": "https://github.com/zhukyuri/my-q-common-utils",
+  "description": "my-q-common-utils",
   "main": "index.js",
   "private": false,
   "scripts": {
