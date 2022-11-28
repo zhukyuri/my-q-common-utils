@@ -90,7 +90,7 @@ export interface TChartLineFormat_Line {
 export type TChartLineFormat = TChartLineFormat_Line[]
 
 
-interface TAggregateInvokeCounterMonth_Point {
+export interface TAggregateInvokeCounterMonth_Point {
   day: Date;
   entity: string;
   count: number;
@@ -99,15 +99,12 @@ interface TAggregateInvokeCounterMonth_Point {
   yearNum: number;
 }
 
-interface TAggregateInvokeCounterMonth_Line {
+export interface TAggregateInvokeCounterMonth_Line {
   data: TAggregateInvokeCounterMonth_Point[];
   entity: string;
 }
 
-type TAggregateInvokeCounterMonth = TAggregateInvokeCounterMonth_Line[]
-
-const formatDate = (date: Date): string => moment(date).format('D.MM').toString();
-
+export type TAggregateInvokeCounterMonth = TAggregateInvokeCounterMonth_Line[]
 
 export const createLineDateFromAggregation_Month = (
   endDate: Date, data: TAggregateInvokeCounterMonth, colors: ColorArr = []): TChartLineFormat => {
@@ -117,6 +114,8 @@ export const createLineDateFromAggregation_Month = (
   const cLength = colors.length;
   const colors_ = cLength !== 0 ? colors : ['#FF0000', '#00FF00', '#0000FF'];
   let colorIndex = 0;
+
+  const formatDate = (date: Date): string => moment(date).format('D.MM').toString();
 
   const points = (data: TAggregateInvokeCounterMonth_Point[]): TChartLineFormat_Point[] => {
     const pointsObj = {};
