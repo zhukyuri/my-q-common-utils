@@ -13,17 +13,16 @@ export class MyQFormatDate {
   public baseDate: Date;
   public dateArray: Date[] = [];
 
-  constructor({ year, monthIndex, day }: TDateInitFormat) {
-    this.baseDate = new Date(year, monthIndex, day);
+  constructor() {
+    this.baseDate = new Date();
   }
 
-  public setBaseDate = ({ year, monthIndex, day }: TDateInitFormat): Date => {
+  public setBaseDate = ({ year, monthIndex, day }: TDateInitFormat): void => {
     this.baseDate = new Date(year, monthIndex, day);
-    return this.baseDate;
   };
 
-  public getNewDate = ({ year, monthIndex, day }: TDateInitFormat): Date => {
-    return new Date(year, monthIndex, day);
+  public getNewDate = ({ year, monthIndex, day }: TDateInitFormat): string => {
+    return new Date(year, monthIndex, day).toDateString();
   };
 
   public begginingDay = (date: Date = this.baseDate): Date => {
@@ -34,13 +33,20 @@ export class MyQFormatDate {
     return new Date(date.getFullYear(), date.getMonth());
   };
 
-  public subtractDate = (date: Date, subtract: TSubtract = 'month', amount: TAmount = 1): Date => {
-    return moment(this.begginingDay(date)).subtract(amount, subtract).toDate();
+  public subtractDate = (
+    date: Date,
+    subtract: TSubtract = 'month',
+    amount: TAmount = 1,
+    addDays: number = 0,
+  ): Date => {
+    let res = moment(this.begginingDay(date)).subtract(amount, subtract);
+    if (addDays) res = res.add(addDays, 'day');
+    return res.toDate();
   };
 
   public dateListDayOfMoth = (baseDate: Date = this.baseDate): Date[] => {
     const endDate: Date = this.subtractDate(this.begginingDay(baseDate));
-    let dateMath: Moment = moment(this.subtractDate(endDate, 'month', 1));
+    let dateMath: Moment = moment(this.subtractDate(endDate, 'month', 1, 1));
     this.dateArray = [];
 
     while (dateMath.toDate() <= endDate) {
@@ -70,7 +76,7 @@ export class MyQFormatDate {
     return (new Date(date.getFullYear(), date.getMonth(), 0)).getDate();
   }
 
-  public makeSequentialArray = function (count: number): number[] {
+  public makeSequentialArray = function(count: number): number[] {
     return Array.from({ length: count }, (_, index) => index + 1);
   };
 
@@ -121,21 +127,23 @@ export interface TAggregateInvokeCounterMonth_Line {
 
 export type TAggregateInvokeCounterMonth = TAggregateInvokeCounterMonth_Line[]
 
-export const createLineDateFromAggregation_Month = (endDate: TDateInitFormat, data: TAggregateInvokeCounterMonth,
+export const createLineDateFromAggregation_Month = (endDate: TDateInitFormat,
+  data: TAggregateInvokeCounterMonth,
   colors: ColorArr = [],
 ): TChartLineFormat => {
-  const C = new MyQFormatDate(endDate);
+  const C = new MyQFormatDate();
+  C.setBaseDate(endDate);
   const allDatesArray: Date[] = C.dateListDayOfMoth(C.baseDate);
   // Colors
-  const cLength = colors.length;
+  let cLength = colors.length;
   const colors_ = cLength !== 0 ? colors : ['#FF0000', '#00FF00', '#0000FF'];
-  let colorIndex = 0;
+  cLength = colors_.length;
 
-  const formatDate = (date: Date): string => moment(date).format('D.MM').toString();
+  const formatDate = (date: Date): string => moment(date).format('DD.MM').toString();
 
   const points = (data: TAggregateInvokeCounterMonth_Point[]): TChartLineFormat_Point[] => {
     const pointsObj: any = {};
-    data.forEach(function (i) {
+    data.forEach(function(i) {
       pointsObj[formatDate(i.day)] = { ...i };
     });
 
@@ -143,61 +151,16 @@ export const createLineDateFromAggregation_Month = (endDate: TDateInitFormat, da
       const fd = formatDate(date);
 
       return {
-        x: fd, y: !pointsObj[fd] ? 0 : pointsObj[fd].count,
+        x: fd.substring(0, 2), y: !pointsObj[fd] ? 0 : pointsObj[fd].count,
       };
     });
   };
 
-  return data.map(function (line) {
-    const color = colors_[colorIndex];
-    colorIndex++;
-    if (colorIndex > (cLength - 1)) colorIndex = 0;
+  return data.map((line, index) => {
+    const color = colors_[index % cLength];
 
     return {
       id: line.entity, color: color, data: points(line.data),
     };
   });
 };
-
-// export const createLineDateFromAggregation_Month = (
-//   endDate: Date, data: TAggregateInvokeCounterMonth, colors: ColorArr = []): TChartLineFormat => {
-//   const C = new MyQFormatDate(endDate);
-//   const allDatesArray: Date[] = C.dateListDayOfMoth(endDate);
-//   // Colors
-//   const cLength = colors.length;
-//   const colors_ = cLength !== 0 ? colors : ['#FF0000', '#00FF00', '#0000FF'];
-//   let colorIndex = 0;
-//
-//   const formatDate = (date: Date): string => moment(date).format('D.MM').toString();
-//
-//   const points = (data: TAggregateInvokeCounterMonth_Point[]): TChartLineFormat_Point[] => {
-//     const pointsObj = {};
-//     data.forEach(function (i) {
-//       pointsObj[formatDate(i.day)] = { ...i };
-//     });
-//
-//     return allDatesArray.map((date) => {
-//       const fd = formatDate(date);
-//       return {
-//         x: fd, y: !pointsObj[fd] ? 0 : pointsObj[fd].day,
-//       };
-//     });
-//   };
-//
-//   return data.map(function (line) {
-//     const color = colors_[colorIndex];
-//     colorIndex++;
-//     if (colorIndex > (cLength - 1)) colorIndex = 0;
-//
-//     return {
-//       id: line.entity, color: color, data: points(line.data),
-//     };
-//   });
-// };
-
-
-// aggregateInvokeCounterMonth:
-
-// {entity: 'COUNTER_DAY', data: Array(4)}
-
-// {entity: 'ORGANIZATION', data: Array(9)}
