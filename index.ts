@@ -3,22 +3,34 @@ import moment, { Moment } from 'moment';
 export type TSubtract = 'month' | 'day' | 'year';
 export type TAmount = number;
 
-export class MyQFormatDate {
-  public baseDay: Date;
-  public dateArray: Date[] = [];
-  public locale: string = 'uk';
+export interface TDateInitFormat {
+  year: number,
+  monthIndex: number,
+  day: number;
+}
 
-  constructor(baseDate: Date = new Date(), locale: string = 'uk') {
-    this.baseDay = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate());
-    this.locale = locale;
-    moment(locale);
+export class MyQFormatDate {
+  public baseDate: Date;
+  public dateArray: Date[] = [];
+
+  constructor({ year, monthIndex, day }: TDateInitFormat) {
+    this.baseDate = new Date(year, monthIndex, day);
   }
 
-  public begginingDay = (date: Date = this.baseDay): Date => {
+  public setBaseDate = ({ year, monthIndex, day }: TDateInitFormat): Date => {
+    this.baseDate = new Date(year, monthIndex, day);
+    return this.baseDate;
+  };
+
+  public getNewDate = ({ year, monthIndex, day }: TDateInitFormat): Date => {
+    return new Date(year, monthIndex, day);
+  };
+
+  public begginingDay = (date: Date = this.baseDate): Date => {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
   };
 
-  public begginingMonth = (date: Date = this.baseDay): Date => {
+  public begginingMonth = (date: Date = this.baseDate): Date => {
     return new Date(date.getFullYear(), date.getMonth());
   };
 
@@ -26,7 +38,7 @@ export class MyQFormatDate {
     return moment(this.begginingDay(date)).subtract(amount, subtract).toDate();
   };
 
-  public dateListDayOfMoth = (baseDate: Date = this.baseDay): Date[] => {
+  public dateListDayOfMoth = (baseDate: Date = this.baseDate): Date[] => {
     const endDate: Date = this.subtractDate(this.begginingDay(baseDate));
     let dateMath: Moment = moment(this.subtractDate(endDate, 'month', 1));
     this.dateArray = [];
@@ -38,7 +50,7 @@ export class MyQFormatDate {
     return this.dateArray;
   };
 
-  public dateListMonthOfYear = (baseDate: Date = this.baseDay): Date[] => {
+  public dateListMonthOfYear = (baseDate: Date = this.baseDate): Date[] => {
     const endDate: Date = this.subtractDate(this.begginingMonth(baseDate));
     let dateMath: Moment = moment(this.subtractDate(endDate, 'year', 1));
     this.dateArray = [];
@@ -109,10 +121,11 @@ export interface TAggregateInvokeCounterMonth_Line {
 
 export type TAggregateInvokeCounterMonth = TAggregateInvokeCounterMonth_Line[]
 
-export const createLineDateFromAggregation_Month = (
-  endDate: Date, data: TAggregateInvokeCounterMonth, colors: ColorArr = []): TChartLineFormat => {
+export const createLineDateFromAggregation_Month = (endDate: TDateInitFormat, data: TAggregateInvokeCounterMonth,
+  colors: ColorArr = [],
+): TChartLineFormat => {
   const C = new MyQFormatDate(endDate);
-  const allDatesArray: Date[] = C.dateListDayOfMoth(endDate);
+  const allDatesArray: Date[] = C.dateListDayOfMoth(C.baseDate);
   // Colors
   const cLength = colors.length;
   const colors_ = cLength !== 0 ? colors : ['#FF0000', '#00FF00', '#0000FF'];
@@ -121,15 +134,16 @@ export const createLineDateFromAggregation_Month = (
   const formatDate = (date: Date): string => moment(date).format('D.MM').toString();
 
   const points = (data: TAggregateInvokeCounterMonth_Point[]): TChartLineFormat_Point[] => {
-    const pointsObj = {};
+    const pointsObj: any = {};
     data.forEach(function (i) {
       pointsObj[formatDate(i.day)] = { ...i };
     });
 
     return allDatesArray.map((date) => {
       const fd = formatDate(date);
+
       return {
-        x: fd, y: !pointsObj[fd] ? 0 : pointsObj[fd].day,
+        x: fd, y: !pointsObj[fd] ? 0 : pointsObj[fd].count,
       };
     });
   };
@@ -144,6 +158,42 @@ export const createLineDateFromAggregation_Month = (
     };
   });
 };
+
+// export const createLineDateFromAggregation_Month = (
+//   endDate: Date, data: TAggregateInvokeCounterMonth, colors: ColorArr = []): TChartLineFormat => {
+//   const C = new MyQFormatDate(endDate);
+//   const allDatesArray: Date[] = C.dateListDayOfMoth(endDate);
+//   // Colors
+//   const cLength = colors.length;
+//   const colors_ = cLength !== 0 ? colors : ['#FF0000', '#00FF00', '#0000FF'];
+//   let colorIndex = 0;
+//
+//   const formatDate = (date: Date): string => moment(date).format('D.MM').toString();
+//
+//   const points = (data: TAggregateInvokeCounterMonth_Point[]): TChartLineFormat_Point[] => {
+//     const pointsObj = {};
+//     data.forEach(function (i) {
+//       pointsObj[formatDate(i.day)] = { ...i };
+//     });
+//
+//     return allDatesArray.map((date) => {
+//       const fd = formatDate(date);
+//       return {
+//         x: fd, y: !pointsObj[fd] ? 0 : pointsObj[fd].day,
+//       };
+//     });
+//   };
+//
+//   return data.map(function (line) {
+//     const color = colors_[colorIndex];
+//     colorIndex++;
+//     if (colorIndex > (cLength - 1)) colorIndex = 0;
+//
+//     return {
+//       id: line.entity, color: color, data: points(line.data),
+//     };
+//   });
+// };
 
 
 // aggregateInvokeCounterMonth:
