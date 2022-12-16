@@ -73,7 +73,18 @@ const createLineDateFromAggregation_Month = (endDate, data, colors = []) => {
     const allDatesArray = C.dateListDayOfMoth(C.baseDate);
     // Colors
     let cLength = colors.length;
-    const colors_ = cLength !== 0 ? colors : ['#FF0000', '#00FF00', '#0000FF'];
+    const colors_ = cLength !== 0 ? colors : [
+        '#FF0000',
+        '#00FF00',
+        '#ff7300',
+        '#e6ff00',
+        '#00ffea',
+        '#bf00ff',
+        '#ff00c3',
+        '#4d8a00',
+        '#9f0196',
+        '#57005b',
+    ];
     cLength = colors_.length;
     const formatDate = (date) => (0, moment_1.default)(date).format('DD.MM').toString();
     const points = (data) => {

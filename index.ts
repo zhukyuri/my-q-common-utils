@@ -33,10 +33,7 @@ export class MyQFormatDate {
     return new Date(date.getFullYear(), date.getMonth());
   };
 
-  public subtractDate = (
-    date: Date,
-    subtract: TSubtract = 'month',
-    amount: TAmount = 1,
+  public subtractDate = (date: Date, subtract: TSubtract = 'month', amount: TAmount = 1,
     addDays: number = 0,
   ): Date => {
     let res = moment(this.begginingDay(date)).subtract(amount, subtract);
@@ -76,7 +73,7 @@ export class MyQFormatDate {
     return (new Date(date.getFullYear(), date.getMonth(), 0)).getDate();
   }
 
-  public makeSequentialArray = function(count: number): number[] {
+  public makeSequentialArray = function (count: number): number[] {
     return Array.from({ length: count }, (_, index) => index + 1);
   };
 
@@ -127,8 +124,7 @@ export interface TAggregateInvokeCounterMonth_Line {
 
 export type TAggregateInvokeCounterMonth = TAggregateInvokeCounterMonth_Line[]
 
-export const createLineDateFromAggregation_Month = (endDate: TDateInitFormat,
-  data: TAggregateInvokeCounterMonth,
+export const createLineDateFromAggregation_Month = (endDate: TDateInitFormat, data: TAggregateInvokeCounterMonth,
   colors: ColorArr = [],
 ): TChartLineFormat => {
   const C = new MyQFormatDate();
@@ -136,14 +132,25 @@ export const createLineDateFromAggregation_Month = (endDate: TDateInitFormat,
   const allDatesArray: Date[] = C.dateListDayOfMoth(C.baseDate);
   // Colors
   let cLength = colors.length;
-  const colors_ = cLength !== 0 ? colors : ['#FF0000', '#00FF00', '#0000FF'];
+  const colors_ = cLength !== 0 ? colors : [
+    '#FF0000',
+    '#00FF00',
+    '#ff7300',
+    '#e6ff00',
+    '#00ffea',
+    '#bf00ff',
+    '#ff00c3',
+    '#4d8a00',
+    '#9f0196',
+    '#57005b',
+  ];
   cLength = colors_.length;
 
   const formatDate = (date: Date): string => moment(date).format('DD.MM').toString();
 
   const points = (data: TAggregateInvokeCounterMonth_Point[]): TChartLineFormat_Point[] => {
     const pointsObj: any = {};
-    data.forEach(function(i) {
+    data.forEach(function (i) {
       pointsObj[formatDate(i.day)] = { ...i };
     });
 
