@@ -1,4 +1,5 @@
 import moment, { Moment } from 'moment';
+import { Hsluv } from 'hsluv';
 
 export type TSubtract = 'month' | 'day' | 'year';
 export type TAmount = number;
@@ -124,27 +125,37 @@ export interface TAggregateInvokeCounterMonth_Line {
 
 export type TAggregateInvokeCounterMonth = TAggregateInvokeCounterMonth_Line[]
 
+export const colorArray = ['#FF0000', '#00FF00', '#ff7300', '#e6ff00', '#00ffea', '#bf00ff', '#ff00c3', '#4d8a00',
+  '#9f0196', '#003b5b', '#4e3780', '#d36cff', '#ff4f4f'];
+
+const colorHSL = (index: number, step_H: number = 65, step_S: number = 15): string => {
+  const max_H = 360;
+  const max_S = 100;
+  const L = 50;
+
+  const countStepsOf_H = Math.floor(360 / step_H); // = 5
+  const levelS = Math.floor(index / countStepsOf_H) * step_S;
+
+  const conv = new Hsluv();
+  conv.hsluv_h = (index * step_H) % max_H;
+  conv.hsluv_s = levelS % max_S;
+  conv.hsluv_l = L;
+  conv.hsluvToHex();
+
+  return conv.hex;
+};
+
+
 export const createLineDateFromAggregation_Month = (endDate: TDateInitFormat, data: TAggregateInvokeCounterMonth,
-  colors: ColorArr = [],
 ): TChartLineFormat => {
   const C = new MyQFormatDate();
   C.setBaseDate(endDate);
   const allDatesArray: Date[] = C.dateListDayOfMoth(C.baseDate);
   // Colors
-  let cLength = colors.length;
-  const colors_ = cLength !== 0 ? colors : [
-    '#FF0000',
-    '#00FF00',
-    '#ff7300',
-    '#e6ff00',
-    '#00ffea',
-    '#bf00ff',
-    '#ff00c3',
-    '#4d8a00',
-    '#9f0196',
-    '#57005b',
-  ];
-  cLength = colors_.length;
+  // colors: ColorArr = [],
+  // let cLength = colors.length;
+  // const colors_ = cLength !== 0 ? colors : colorArray;
+  // cLength = colors_.length;
 
   const formatDate = (date: Date): string => moment(date).format('DD.MM').toString();
 
@@ -164,7 +175,8 @@ export const createLineDateFromAggregation_Month = (endDate: TDateInitFormat, da
   };
 
   return data.map((line, index) => {
-    const color = colors_[index % cLength];
+    // const color = colors_[index % cLength];
+    const color = colorHSL(index);
 
     return {
       id: line.entity, color: color, data: points(line.data),

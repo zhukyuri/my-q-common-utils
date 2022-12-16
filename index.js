@@ -3,8 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createLineDateFromAggregation_Month = exports.MyQFormatDate = void 0;
+exports.createLineDateFromAggregation_Month = exports.colorArray = exports.MyQFormatDate = void 0;
 const moment_1 = __importDefault(require("moment"));
+const hsluv_1 = require("hsluv");
 class MyQFormatDate {
     baseDate;
     dateArray = [];
@@ -67,25 +68,30 @@ class MyQFormatDate {
     };
 }
 exports.MyQFormatDate = MyQFormatDate;
-const createLineDateFromAggregation_Month = (endDate, data, colors = []) => {
+exports.colorArray = ['#FF0000', '#00FF00', '#ff7300', '#e6ff00', '#00ffea', '#bf00ff', '#ff00c3', '#4d8a00',
+    '#9f0196', '#003b5b', '#4e3780', '#d36cff', '#ff4f4f'];
+const colorHSL = (index, step_H = 65, step_S = 15) => {
+    const max_H = 360;
+    const max_S = 100;
+    const L = 50;
+    const countStepsOf_H = Math.floor(360 / step_H); // = 5
+    const levelS = Math.floor(index / countStepsOf_H) * step_S;
+    const conv = new hsluv_1.Hsluv();
+    conv.hsluv_h = (index * step_H) % max_H;
+    conv.hsluv_s = levelS % max_S;
+    conv.hsluv_l = L;
+    conv.hsluvToHex();
+    return conv.hex;
+};
+const createLineDateFromAggregation_Month = (endDate, data) => {
     const C = new MyQFormatDate();
     C.setBaseDate(endDate);
     const allDatesArray = C.dateListDayOfMoth(C.baseDate);
     // Colors
-    let cLength = colors.length;
-    const colors_ = cLength !== 0 ? colors : [
-        '#FF0000',
-        '#00FF00',
-        '#ff7300',
-        '#e6ff00',
-        '#00ffea',
-        '#bf00ff',
-        '#ff00c3',
-        '#4d8a00',
-        '#9f0196',
-        '#57005b',
-    ];
-    cLength = colors_.length;
+    // colors: ColorArr = [],
+    // let cLength = colors.length;
+    // const colors_ = cLength !== 0 ? colors : colorArray;
+    // cLength = colors_.length;
     const formatDate = (date) => (0, moment_1.default)(date).format('DD.MM').toString();
     const points = (data) => {
         const pointsObj = {};
@@ -100,7 +106,8 @@ const createLineDateFromAggregation_Month = (endDate, data, colors = []) => {
         });
     };
     return data.map((line, index) => {
-        const color = colors_[index % cLength];
+        // const color = colors_[index % cLength];
+        const color = colorHSL(index);
         return {
             id: line.entity, color: color, data: points(line.data),
         };
