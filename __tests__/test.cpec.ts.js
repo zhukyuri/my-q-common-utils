@@ -1,7 +1,11 @@
+import { colorHSL } from "../index";
+
+
 describe('test', function () {
 
   test('Find By Id', async () => {
-    expect(10).toEqual(10);
+    colorHSL(10)
+    expect(colorHSL(10)).toEqual("#fff");
   });
 
 });
