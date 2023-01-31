@@ -1,4 +1,4 @@
-import moment, { Moment } from 'moment';
+import moment, {Moment} from 'moment';
 
 export type TSubtract = 'month' | 'day' | 'year';
 export type TAmount = number;
@@ -17,11 +17,12 @@ export class MyQFormatDate {
     this.baseDate = new Date();
   }
 
-  public setBaseDate = ({ year, monthIndex, day }: TDateInitFormat): void => {
-    this.baseDate = new Date(year, monthIndex, day);
+  public setBaseDate = (newBaseDate: TDateInitFormat | undefined): void => {
+    if (newBaseDate) this.baseDate = new Date(newBaseDate.year, newBaseDate.monthIndex, newBaseDate.day);
+    else this.baseDate = new Date()
   };
 
-  public getNewDate = ({ year, monthIndex, day }: TDateInitFormat): string => {
+  public getNewDate = ({year, monthIndex, day}: TDateInitFormat): string => {
     return new Date(year, monthIndex, day).toDateString();
   };
 
@@ -36,7 +37,7 @@ export class MyQFormatDate {
   };
 
   public subtractDate = (date: Date, subtract: TSubtract = 'month', amount: TAmount = 1,
-    addDays: number = 0,
+                         addDays: number = 0,
   ): Date => {
     let res = moment(this.begginingDay(date)).subtract(amount, subtract);
     if (addDays) res = res.add(addDays, 'day');
@@ -44,7 +45,7 @@ export class MyQFormatDate {
   };
 
   public dateListDayOfMoth = (baseDate: Date = this.baseDate): Date[] => {
-    const endDate: Date = this.subtractDate(this.begginingDay(baseDate));
+    const endDate: Date = this.begginingDay(baseDate);
     let dateMath: Moment = moment(this.subtractDate(endDate, 'month', 1, 1));
     this.dateArray = [];
 
@@ -76,7 +77,7 @@ export class MyQFormatDate {
   }
 
   public makeSequentialArray = function (count: number): number[] {
-    return Array.from({ length: count }, (_, index) => index + 1);
+    return Array.from({length: count}, (_, index) => index + 1);
   };
 
   public allDaysOfMonth = (date: Date): {

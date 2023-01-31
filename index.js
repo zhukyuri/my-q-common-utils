@@ -11,8 +11,11 @@ class MyQFormatDate {
     constructor() {
         this.baseDate = new Date();
     }
-    setBaseDate = ({ year, monthIndex, day }) => {
-        this.baseDate = new Date(year, monthIndex, day);
+    setBaseDate = (newBaseDate) => {
+        if (newBaseDate)
+            this.baseDate = new Date(newBaseDate.year, newBaseDate.monthIndex, newBaseDate.day);
+        else
+            this.baseDate = new Date();
     };
     getNewDate = ({ year, monthIndex, day }) => {
         return new Date(year, monthIndex, day).toDateString();
@@ -31,7 +34,7 @@ class MyQFormatDate {
         return res.toDate();
     };
     dateListDayOfMoth = (baseDate = this.baseDate) => {
-        const endDate = this.subtractDate(this.begginingDay(baseDate));
+        const endDate = this.begginingDay(baseDate);
         let dateMath = (0, moment_1.default)(this.subtractDate(endDate, 'month', 1, 1));
         this.dateArray = [];
         while (dateMath.toDate() <= endDate) {
