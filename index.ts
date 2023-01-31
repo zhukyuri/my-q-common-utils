@@ -36,8 +36,7 @@ export class MyQFormatDate {
     return new Date(date.getFullYear(), date.getMonth());
   };
 
-  public subtractDate = (date: Date, subtract: TSubtract = 'month', amount: TAmount = 1,
-                         addDays: number = 0,
+  public subtractDate = (date: Date, subtract: TSubtract = 'month', amount: TAmount = 1, addDays: number = 0,
   ): Date => {
     let res = moment(this.begginingDay(date)).subtract(amount, subtract);
     if (addDays) res = res.add(addDays, 'day');
