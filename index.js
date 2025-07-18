@@ -8,8 +8,8 @@ const moment_1 = __importDefault(require("moment"));
 class MyQFormatDate {
     baseDate;
     dateArray = [];
-    constructor() {
-        this.baseDate = new Date();
+    constructor(baseDate) {
+        this.baseDate = !baseDate ? new Date() : baseDate;
     }
     setBaseDate = (newBaseDate) => {
         if (newBaseDate)

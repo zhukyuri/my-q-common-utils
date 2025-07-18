@@ -13,8 +13,8 @@ export class MyQFormatDate {
   public baseDate: Date;
   public dateArray: Date[] = [];
 
-  constructor() {
-    this.baseDate = new Date();
+  constructor(baseDate?: Date) {
+    this.baseDate = !baseDate ? new Date() : baseDate;
   }
 
   public setBaseDate = (newBaseDate: TDateInitFormat | undefined): void => {
