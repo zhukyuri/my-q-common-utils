@@ -57,17 +57,43 @@ class MyQFormatDate {
         return new Date(year, month, 0).getDate();
     }
     endDayOdMonth(date) {
-        return (new Date(date.getFullYear(), date.getMonth(), 0)).getDate();
+        return new Date(date.getFullYear(), date.getMonth(), 0).getDate();
     }
     makeSequentialArray = function (count) {
         return Array.from({ length: count }, (_, index) => index + 1);
     };
     allDaysOfMonth = (date) => {
-        const dayFirst = 1;
-        const dayEnd = this.endDayOdMonth(date);
-        return {
-            daysArray: this.makeSequentialArray(dayEnd), dayFirst, dayEnd, month: date.getMonth(),
-        };
+        const dateM = (0, moment_1.default)(date);
+        const daysArray = [];
+        const endDate = this.begginingDay(date);
+        const startDate = dateM.clone().subtract(1, 'month');
+        const daysDiff = (0, moment_1.default)(endDate).diff(startDate, 'days') + 1;
+        for (let i = 0; i < daysDiff; i++) {
+            const dayDate = (0, moment_1.default)(startDate).add(i, 'days').toDate();
+            daysArray.push({
+                date: dayDate,
+                year: dayDate.getFullYear(),
+                month: dayDate.getMonth() + 1,
+                day: dayDate.getDate(),
+                key: (0, moment_1.default)(dayDate).format('YY-MM-DD'),
+            });
+        }
+        return daysArray;
+    };
+    allMonthOfYear = (date) => {
+        const monthArray = [];
+        const currentMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+        for (let i = 11; i >= 0; i--) {
+            const monthDate = new Date(currentMonth.getFullYear(), date.getMonth() - i, 1);
+            monthArray.push({
+                date: monthDate,
+                year: monthDate.getFullYear(),
+                month: monthDate.getMonth() + 1,
+                day: monthDate.getDate(),
+                key: (0, moment_1.default)(monthDate).format('YY-MM-DD'),
+            });
+        }
+        return monthArray;
     };
 }
 exports.MyQFormatDate = MyQFormatDate;
