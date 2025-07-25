@@ -63,11 +63,11 @@ class MyQFormatDate {
         return Array.from({ length: count }, (_, index) => index + 1);
     };
     allDaysOfMonth = (date) => {
-        const dateM = (0, moment_1.default)(date);
         const daysArray = [];
-        const endDate = this.begginingDay(date);
-        const startDate = dateM.clone().subtract(1, 'month');
-        const daysDiff = (0, moment_1.default)(endDate).diff(startDate, 'days') + 1;
+        const dateM = (0, moment_1.default)(date);
+        const endDate = dateM.add(1, 'day');
+        const startDate = endDate.clone().subtract(1, 'month');
+        const daysDiff = (0, moment_1.default)(endDate).diff(startDate, 'days');
         for (let i = 0; i < daysDiff; i++) {
             const dayDate = (0, moment_1.default)(startDate).add(i, 'days').toDate();
             daysArray.push({
@@ -82,7 +82,7 @@ class MyQFormatDate {
     };
     allMonthOfYear = (date) => {
         const monthArray = [];
-        const currentMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+        const currentMonth = new Date(date.getFullYear(), date.getMonth() + 2, 1);
         for (let i = 11; i >= 0; i--) {
             const monthDate = new Date(currentMonth.getFullYear(), date.getMonth() - i, 1);
             monthArray.push({

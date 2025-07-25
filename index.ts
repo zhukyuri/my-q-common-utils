@@ -10,7 +10,7 @@ export interface TDateInitFormat {
 }
 
 export interface TFullDate {
-  date: any
+  date: Date
   year: number
   month: number
   day: number
@@ -87,11 +87,11 @@ export class MyQFormatDate {
   }
 
   public allDaysOfMonth = (date: Date): TFullDate[] => {
-    const dateM = moment(date)
     const daysArray: TFullDate[] = []
-    const endDate = this.begginingDay(date)
-    const startDate = dateM.clone().subtract(1, 'month')
-    const daysDiff = moment(endDate).diff(startDate, 'days') + 1
+    const dateM = moment(date)
+    const endDate = dateM.add(1, 'day')
+    const startDate = endDate.clone().subtract(1, 'month')
+    const daysDiff = moment(endDate).diff(startDate, 'days')
 
     for (let i = 0; i < daysDiff; i++) {
       const dayDate = moment(startDate).add(i, 'days').toDate()
@@ -109,7 +109,7 @@ export class MyQFormatDate {
 
   public allMonthOfYear = (date: Date): TFullDate[] => {
     const monthArray: TFullDate[] = []
-    const currentMonth = new Date(date.getFullYear(), date.getMonth(), 1)
+    const currentMonth = new Date(date.getFullYear(), date.getMonth() + 2, 1)
 
     for (let i = 11; i >= 0; i--) {
       const monthDate = new Date(currentMonth.getFullYear(), date.getMonth() - i, 1)
